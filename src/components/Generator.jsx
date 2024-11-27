@@ -29,6 +29,28 @@ export default function Generator() {
     setShowModal(!showModal);
   }
 
+  function updateMuscle(muscleGroup) {
+    if (muscles.length > 2) {
+      return;
+    }
+
+    if (poision !== "individual") {
+      setMuscles([muscleGroup]);
+      return;
+    }
+
+    if (muscles.includes(muscleGroup)) {
+      setMuscles(muscles.filter((val) => val !== muscleGroup));
+      return;
+    }
+
+    setMuscles([...muscles, muscleGroup]);
+  }
+
+  /// setShowModal - this toggles the modal on and off onClick
+
+  /// updateMuscle -
+
   return (
     <SectionWrapper
       header={"generate your workout"}
@@ -57,13 +79,11 @@ export default function Generator() {
           );
         })}
       </div>
-
       <Header
         index={"02"}
         title={"Pick your position"}
         description={"Select the workout you wish to endure"}
       />
-
       <div className="bg-slate-950  border border-solid border-blue-400 rounded-lg flex flex-col">
         <button
           onClick={toggleModal}
@@ -73,9 +93,34 @@ export default function Generator() {
           <i className="fa-solid absolute right-3 top-1/2 -translate-y-1/2 fa-caret-down"></i>
         </button>
 
-        {showModal && <div>modal</div>}
-      </div>
+        {showModal && (
+          <div className="flex flex-col">
+            {(poision === "individual"
+              ? WORKOUTS[poision]
+              : Object.keys(WORKOUTS[poision])
+            ).map((muscleGroup, muscleGroupIndex) => {
+              console.log(muscleGroup);
 
+              return (
+                <button
+                  onClick={() => {
+                    updateMuscle(muscleGroup);
+                  }}
+                  key={muscleGroupIndex}
+                  className={
+                    "hover:text-blue-400 duration-200" +
+                    (muscles.includes(muscleGroup) ? " text-blue-400" : " ")
+                  }
+                >
+                  <p className="uppercase">
+                    {muscleGroup.replaceAll("_", " ")}
+                  </p>
+                </button>
+              );
+            })}
+          </div>
+        )}
+      </div>
       <Header
         index={"03"}
         title={"Become Juggernaut"}
